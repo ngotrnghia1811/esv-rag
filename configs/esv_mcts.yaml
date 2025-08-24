@@ -1,0 +1,55 @@
+# ESV-RAG System Configuration
+# Default: LLaMA-3.1-8B-Instruct + E5-base retriever + MS MARCO corpus
+
+mcts:
+  num_simulations: 50
+  max_depth: 10
+  exploration_constant: 1.414
+  discount_factor: 0.95
+  max_simulation_steps: 10
+  verbose: false
+
+reward:
+  answer_quality: 0.4
+  reasoning_coherence: 0.3
+  verification_success: 0.2
+  efficiency: 0.1
+  max_expected_steps: 15
+  optimal_questions: 5
+  total_skills: 6
+
+action:
+  max_explore_questions: 5
+  explore_temperature: 0.8
+  max_solve_workers: 4
+  solve_temperature: 0.7
+  confidence_threshold: 0.7
+  enable_parallel_solve: true
+  max_verify_questions: 5
+  verify_temperature: 0.6
+  verification_threshold: 0.80
+  enable_self_correction: true
+  max_correction_attempts: 2
+
+generator:
+  api_url: null               # null → local; set to vLLM server URL for remote
+  api_key: "EMPTY"
+  model_name: "meta-llama/Llama-3.1-8B-Instruct"
+  max_tokens: 1024
+  temperature: 0.8
+  top_p: 0.9
+  use_vllm: false
+  gpu_memory_utilization: 0.85
+  use_cache: true
+  cache_dir: "cache/generator"
+
+retriever:
+  method: "e5base"            # "bm25" | "e5base" | "bge"
+  corpus_path: ""             # path to corpus JSONL file
+  index_path: "storage/indexes"
+  retrieval_topk: 5
+  query_max_length: 512
+  use_cache: true
+  cache_path: "cache/retrieval/cache.json"
+  model_path: "intfloat/e5-base-v2"
+  batch_size: 32
