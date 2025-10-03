@@ -1,8 +1,6 @@
 # ESV-RAG
 
-Official implementation of **"ESV-RAG: Explore-Solve-Verify Reasoning-Augmented Generation with Monte Carlo Tree Search Planning"**.
-
-[[Paper]](docs/esv_rag_paper.pdf)
+**ESV-RAG: Explore-Solve-Verify Reasoning-Augmented Generation with Monte Carlo Tree Search Planning**
 
 ## Overview
 
@@ -134,53 +132,6 @@ result = planner.run("What is the capital of the country where the Mona Lisa's p
 print(result.final_state.main_answer)   # "Rome"
 print(result.action_sequence)           # ["E", "S", "V"]
 print(f"Reward: {result.final_reward:.3f}")
-```
-
-## Architecture
-
-```
-esv_rag/
-├── config.py     — ESVConfig, MCTSConfig, RewardConfig, ActionConfig, TrainConfig
-├── state.py      — QuestionStatus, ReasoningSkill, QuestionItem, State (MDP state)
-├── mcts.py       — Node, MCTS backbone, ESVMCTSNode, ESVMCTS (PUCT search)
-├── actions.py    — ActionResult, ExplorationAction, SolvingAction, VerificationAction
-├── generator.py  — Generator (OpenAI-compatible API / vLLM / HuggingFace)
-├── retriever.py  — RetrieverClient (E5-base / BGE / BM25 + FAISS index)
-├── rewards.py    — ESVRewardCalculator (4-component composite reward)
-├── planner.py    — SimplePlanner (baseline), MCTSPlanner (full model)
-└── train.py      — DataCurator, TraceGenerator, SFTTrainer, PPOTrainer
-prompts/
-├── explore.py    — EXPLORATION_PROMPT, FOCUSED_EXPLORATION_PROMPT,
-│                   ITERATIVE_EXPLORATION_PROMPT
-├── solve.py      — SUB_QUESTION_ANSWER_PROMPT, MAIN_ANSWER_SYNTHESIS_PROMPT,
-│                   REANSWER_SUB_QUESTION_PROMPT
-└── verify.py     — VERIFICATION_QUESTION_PROMPT, VERIFICATION_ANSWER_PROMPT,
-                    SELF_CORRECTION_PROMPT, COMPREHENSIVE_VERIFICATION_PROMPT
-```
-
-**Key hyperparameters (§3.2, §3.7):**
-
-| Parameter | Value | Description |
-|-----------|:-----:|-------------|
-| MCTS simulations | 50 | Rollouts per question |
-| c_puct | 1.414 | PUCT exploration constant |
-| γ (discount) | 0.95 | Reward discount factor |
-| Reward weights (α₁…α₄) | 0.4 / 0.3 / 0.2 / 0.1 | Quality / Coherence / Verify / Efficiency |
-| Verification threshold τ | 0.80 | Minimum v_score to pass |
-| Max self-corrections | 2 | Correction iterations per episode |
-| SFT base model | Llama-3.2-1B | Policy initialisation |
-| PPO clip ε | 0.2 | Importance ratio clipping |
-| KL coefficient | 0.01 | KL penalty against reference |
-
-## Citation
-
-```bibtex
-@article{ngo2025esvrag,
-    title={ESV-RAG: Explore-Solve-Verify Reasoning-Augmented Generation
-           with Monte Carlo Tree Search Planning},
-    author={Ngo, Nghia Trung and others},
-    year={2025}
-}
 ```
 
 ## License
